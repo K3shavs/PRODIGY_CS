@@ -1,0 +1,67 @@
+import re
+
+def check_password_strength(password):
+    errors = []
+    feedback = []
+
+    # Check length
+    if len(password) < 8:
+        errors.append("Password should be at least 8 characters long.")
+    elif len(password) < 12:
+        feedback.append("Consider using 12 or more characters for better security.")
+
+    # Check for uppercase letter
+    if not re.search(r"[A-Z]", password):
+        errors.append("Password should contain at least one uppercase letter.")
+
+    # Check for lowercase letter
+    if not re.search(r"[a-z]", password):
+        errors.append("Password should contain at least one lowercase letter.")
+
+    # Check for digit
+    if not re.search(r"\d", password):
+        errors.append("Password should contain at least one digit.")
+
+    # Check for special character
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+        errors.append("Password should contain at least one special character.")
+
+    # Evaluate strength based on criteria met
+    criteria_met = 5 - len(errors)
+    length = len(password)
+
+    if criteria_met == 5 and length >= 12:
+        strength = "Strong"
+    elif criteria_met >= 3 and length >= 8:
+        strength = "Moderate"
+    else:
+        strength = "Weak"
+
+    # Build feedback message
+    if errors:
+        message = "Password is weak. Please consider the following:\n" + "\n".join(errors)
+    else:
+        message = "Password meets the basic complexity requirements."
+
+    if feedback:
+        message += "\n" + "\n".join(feedback)
+
+    message += f"\nOverall strength: {strength}"
+
+    return message
+
+
+# Example usage
+if __name__ == "__main__":
+    test_passwords = [
+        "Password123!",
+        "weakpass",
+        "NoSpecialChar1",
+        "Short1!",
+        "StrongPass#2025"
+    ]
+
+    for pwd in test_passwords:
+        print(f"Password: {pwd}")
+        print(check_password_strength(pwd))
+        print("-" * 40)
